@@ -134,7 +134,52 @@ function UpdateVersionID(Version: string)
       }
 
       // Alpha
-      else if(Version.includes("alpha")) Version = "a" + Version.substring(7);
+      else if(Version.includes("alpha")) 
+      {
+        Version = "a" + Version.substring(7);
+
+        switch(Version)
+        {
+          case "a1.0.4": Version = "a1.0.4-launcher";
+
+          case "a1.0.5-1":
+          case "a1.0.5-2":
+          case "a1.0.5": Version = "a1.0.5-2149";
+
+          case "a1.0.6_02": Version = "a1.0.6_03";
+
+          case "a1.0.13_01-1": Version = "a1.0.13_01-1038";
+          case "a1.0.13_01-2"
+          case "a1.0.13_01": Version = "a1.0.13_01-1444";
+
+
+          case "a1.0.14-1": Version = "a1.0.14-1603";
+          case "a1.0.14-2": Version = "a1.0.14-1659";
+          case "a1.0.14-3":
+          case "a1.0.14": Version = "a1.0.14-1659-launcher";
+
+          case "a1.1.0-1": Version = "a1.1.0-101847";
+          case "a1.1.0-2": Version = "a1.1.0-101847-launcher";
+          case "a1.1.0-3": Version = "a1.1.0-131933";
+          case "a1.1.0": Version = "a1.1.0-131933";
+
+          case "a1.2.0":
+          case "a1.2.0-1":
+          case "a1.2.0-2": Version = "a1.1.0-131933";
+
+          case "a1.2.0-_02-1": Version = "a1.2.0_02";
+          case "a1.2.0-_02-2":
+          case "a1.2.0-_02": Version = "a1.2.0_02-launcher";
+
+          case "a1.2.2a": Version = "a1.2.2-1624";
+          case "a1.2.2b":
+          case "a1.2.2": Version = "a1.2.2-1938";
+
+          case "a1.2.3_01-1": Version = "a1.2.3_01-0956"
+          case "a1.2.3_01-2": 
+          case "a1.2.3_01": Version = "a1.2.3_01-0958"
+        }
+      }
 
       // Beta
       else if(Version.includes("beta"))
