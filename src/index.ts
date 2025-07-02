@@ -149,7 +149,7 @@ function UpdateVersionID(Version: string)
           case "a1.0.6_02": Version = "a1.0.6_03";
 
           case "a1.0.13_01-1": Version = "a1.0.13_01-1038";
-          case "a1.0.13_01-2"
+          case "a1.0.13_01-2":
           case "a1.0.13_01": Version = "a1.0.13_01-1444";
 
 
