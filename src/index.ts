@@ -1,6 +1,5 @@
-import { verify } from 'crypto';
 import express from 'express';
-import { version } from 'os';
+import fs from 'fs';
 // import TimelinesChart from 'timelines-chart';
 
 const app = express()
@@ -17,10 +16,10 @@ interface ArticleData {
 
   FullReleaseDate: Date; 
 
-  StartVer: string[];
-  StartDate: Date[];
   EndVer: string[];
   EndDate: Date[];
+  StartVer: string[];
+  StartDate: Date[];
 }
 
 interface MCDF_Article {
@@ -40,7 +39,7 @@ interface OmniVer {
 type OmniVerions = OmniVer[];
 
 app.get('/', async (req, res) => {
-
+  res.send(fs.readFileSync("./src/website/index.html").toString())
 });
 
 let previousVer: string // Only used when end ver is null signifying that it was only for the one version
@@ -469,7 +468,8 @@ function UpdateVersionID(Version: string)
 }
 
 
-let BannedSymboles: string[] = ["≤", "≈", ""];
+let BannedSymbols: string[] = ["≤", "≈", ""];
+let Omni: OmniVerions;
 
 async function CreateVerFile() {
   
@@ -481,7 +481,7 @@ async function CreateVerFile() {
   let OmniComplete = await omniRes.json();
     
   // Sets omni to be version data only instead of including latest update
-  let Omni: OmniVerions = OmniComplete.versions;
+  Omni = OmniComplete.versions;
 
   for(let i = 0; i < Omni.length; i++)
   {
@@ -516,7 +516,8 @@ async function CreateVerFile() {
     // Removes any deleted - reintroduced ranges
     if(mcdf[i].End == "{{{reintoducedversion}}}" || !mcdf[i]._pageName.includes("Java Edition:"))
     {
-      mcdf.splice(i, 1);
+      mcdf.splice(mcdf.indexOf(mcdf[i]), 1);
+      i--;
       continue;
     }
 
@@ -551,49 +552,79 @@ async function CreateVerFile() {
     console.log(mcdf[i]._pageName + " (" + i + "), " + mcdf[i].Start + " - " + mcdf[i].End);
   }
 
+  // Snips off the start and end item as theres some stragglers
+  mcdf = mcdf.splice(1, mcdf.length - 2);
+
   // Create Article Data
   let Articles: ArticleData[] = [];
-  for(let i = 0; i < mcdf.length; i++)
+  let previousArticle: ArticleData = CreateArticle(mcdf[0]);
+  Articles.push(previousArticle);
+  for(let i = 1; i < mcdf.length; i++)
   {
-    // Precomputes info
-    let UpdateIndex
-    UpdateIndex = (UpdateInfo: OmniVer) => UpdateInfo.id == mcdf[i].Start;
-    const StartUpdateInfo = Omni[Omni.findIndex(UpdateIndex)];
-
-    UpdateIndex = (UpdateInfo: OmniVer) => UpdateInfo.id == mcdf[i].End;
-    const EndUpdateInfo = Omni[Omni.findIndex(UpdateIndex)];
-    
-    let FullReleaseUpdate
-    if(StartUpdateInfo.phase != "post-1.0") 
+    // Checks if diffrent range the same article
+    if("Java Edition:" + previousArticle.Title == mcdf[i]._pageName)
     {
-      UpdateIndex = (UpdateInfo: OmniVer) => UpdateInfo.id == StartUpdateInfo.id;
-      FullReleaseUpdate = Omni[Omni.findIndex(UpdateIndex)].releaseTime;
+      let UpdateIndex
+      UpdateIndex = (UpdateInfo: OmniVer) => UpdateInfo.id == mcdf[i].Start;
+      const StartTime = Omni[Omni.findIndex(UpdateIndex)].releaseTime;
+
+      UpdateIndex = (UpdateInfo: OmniVer) => UpdateInfo.id == mcdf[i].End;
+      const EndTime = Omni[Omni.findIndex(UpdateIndex)].releaseTime;
+
+      previousArticle.StartDate.push(StartTime);
+      previousArticle.EndDate.push(EndTime);
+
+      previousArticle.StartVer.push(mcdf[i].Start);
+      previousArticle.EndVer.push(mcdf[i].End);
     }
-    else FullReleaseUpdate = new Date();
-
-    let newArticle: ArticleData = {
-
-    StartVer: [mcdf[i].Start],
-    EndVer: [mcdf[i].End],
-
-    // Removes the "Java Edition:" from page names
-    Title: mcdf[i]._pageName.substring(mcdf[i]._pageName.indexOf(":") + 1),
-
-    // Assigns it the edition
-    Edition: mcdf[i]._pageName.split(':')[0],
-
-    // Grabs the version date from Omni
-
-    StartDate: [StartUpdateInfo.releaseTime],
-    EndDate: [EndUpdateInfo.releaseTime],
-
-    FullReleaseDate: FullReleaseUpdate,
-
-    };
-
+    else 
+    {
+      Articles.push(CreateArticle(mcdf[i]));
+      previousArticle = Articles[Articles.length - 1]
+    }
   };
 
 }
+
+function CreateArticle(Data: MCDF_Article)
+{
+  // Precomputes info
+  let UpdateIndex
+  UpdateIndex = (UpdateInfo: OmniVer) => UpdateInfo.id == Data.Start;
+  const StartUpdateInfo = Omni[Omni.findIndex(UpdateIndex)];
+
+  UpdateIndex = (UpdateInfo: OmniVer) => UpdateInfo.id == Data.End;
+  const EndUpdateInfo = Omni[Omni.findIndex(UpdateIndex)];
+  
+  let FullReleaseUpdate
+  if(StartUpdateInfo.phase != "post-1.0") 
+  {
+    UpdateIndex = (UpdateInfo: OmniVer) => UpdateInfo.id == StartUpdateInfo.id;
+    FullReleaseUpdate = Omni[Omni.findIndex(UpdateIndex)].releaseTime;
+  }
+  else FullReleaseUpdate = new Date();
+
+  return {
+
+  StartVer: [Data.Start],
+  EndVer: [Data.End],
+
+  // Removes the "Java Edition:" from page names
+  Title: Data._pageName.substring(Data._pageName.indexOf(":") + 1),
+
+  // Assigns it the edition
+  Edition: Data._pageName.split(':')[0],
+
+  // Grabs the version date from Omni
+
+  StartDate: [StartUpdateInfo.releaseTime],
+  EndDate: [EndUpdateInfo.releaseTime],
+
+  FullReleaseDate: FullReleaseUpdate,
+
+  };
+}
+
 
 app.listen(port, () => {
   CreateVerFile();
