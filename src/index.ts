@@ -47,97 +47,968 @@ app.get('/', async (req, res) => {
 let previousVer: string // Only used when end ver is null signifying that it was only for the one version
 function UpdateVersionID(Version: string)
 {
-    if(Version == "0.0.12a_03") Version = "c0.0.12a_03-200018"; // Remove later
+  switch(Version)
+  {
+    // #region Pre-Classic
+    // Unreleased
+    case "cave game tech test":
+    case "cave game": 
 
-    // Pre-Classic
-    if(Version.includes("pre-classic rd-") || Version.substring(0, 3) == "rd-") 
-    {
-      // Pre-classic is messured from CEST (local time Sweden) instead of UTC
-      // like literally everything else is later, Omni uses UTC
-      let Timecode;
-      if(Version.includes("132211")) Timecode = "132011";
-      else if(Version.includes("132328")) Timecode = "132128";
-      else if(Version.includes("160052")) Timecode = "152252";
-      else if(Version.includes("161348")) Timecode = "161148";
+    case "rd-132211": // CEST
+    case "rd-132011": // UTC
+    case "pre-classic rd-132211": // CEST
+    case "pre-classic rd-132011": Version = "pc-132011-launcher"; // UTC
 
-      Version = "pc-" + Timecode + "-launcher"
+    case "rd-132328": // CEST
+    case "rd-132128": // UTC
+    case "pre-classic rd-132128": // CEST
+    case "pre-classic rd-132011": Version = "pc-132011-launcher";
 
-      previousVer = Version;
-      return Version;
-    }
+    // Unreleased
+    case "rd-20090515": // CEST
+    case "rd-20090315": // UTC
+    case "rd-160015": // CEST
+    case "rd-152215": // UTC
+    case "pre-classic rd-20090515": // CEST
+    case "pre-classic rd-20090315": // UTC
+    case "pre-classic rd-160015": // CEST
+    case "pre-classic rd-152215": // UTC
 
-    // Classic
-    else if(Version.includes("classic")) 
-    {
-      Version = "c" + Version.substring(8);
+    case "rd-160052": // CEST
+    case "rd-152252": // UTC
+    case "pre-classic rd-152252": // CEST
+    case "pre-classic rd-160052": Version = "pc-152252-launcher"; // UTC
 
-      if(Version == "c0.0.12a") Version = "c0.0.12a_03-200018";
+    case "rd-161348": // CEST
+    case "rd-161148": // UTC
+    case "pre-classic rd-161348": // CEST
+    case "pre-classic rd-161148": Version = "pc-161148-launcher"; // UTC
 
-      if(Version == "c0.0.13a/development" || Version == "c0.0.13a") Version = "c0.0.13a-launcher";
+    // #endregion
 
-      if(Version == "c0.0.14a") Version = "c0.0.14a_08";
-
-      // Glass page my new detested (delete later)
-      if(Version == "c0.0.19a" || Version == "c0.0.19") Version = "c0.0.19a_04";
-
-      // Glass page my new detested 
-      if(Version == "c0.0.20a") Version = "c0.0.20a_01";
-
-      if(Version.includes("0.0.21a")) Version = "c0.0.21a-2008";
-
-      // Turns Survial Tests into st
-      if(Version.includes("survival test")) 
-      {
-        
-      if(Version == "c0.25 survival test") Version = "c0.25_05";
-
-        // Turns Survial Tests into st
-        Version = Version.split(" ")[0] + "_st";
-
-        // 24 has it at the end??
-        if(Version == "c0.25_st") Version = "c0.25_st_03";
-      }
-
-      if(Version == "c0.28") Version = "c0.28_01";
-
-      // What does "renew" even mean
-      if(Version.substring(0, 5) == "c0.30") 
-      {
-        if(Version.includes("c-2")) 
-        {
-          Version = "c0.30-c-1900-renew";
-        }
-        else Version = "c0.30-c-1900";
-      }
-
-      previousVer = Version;
-      return Version;
-    }
-
-    // Indev
-    else if(Version.includes("indev")) 
-    {
-      Version = Version.replace("_"," ");
-
-      // Turns "Indev 0.31 [timecode]" and "Indev [timecode]" into "In-[timecode]"
-      if(Version.substring(6, 10) == "0.31") Version = "in-" + Version.substring(11);
-      else Version = "in-" + Version.substring(6);
-
-      // Updates it into versions we have
-      if(Version == "in-20100124") Version = "in-20100124-2310";
-      else if(Version == "in-20100205" || Version == "in-20100206-2034") Version = "in-20100206-2103";
-      else if(Version == "in-20100128") Version = "in-20100128-2304";
-      else if(Version == "in-20100201") Version = "in-20100201-0025";
-      else if(Version == "in-20100125-1" // Shoutup duplication page
-        || Version == "in-20100122" 
-        || Version == "in-20100114"
-        || Version == "in-20100124-2119") Version = "in-20100124-2310"; 
-      else if(Version == "in-20100131" || Version == "in-20100131-2156") Version = "in-20100131-2244";
+    // #region Early Classic
+    // Unreleased
+    case "mc-161607":
+    case "classic mc-161607":
       
+    // Unreleased
+    case "mc-161616":
+    case "classic mc-161616":
+
+    // Unreleased
+    case "mc-161625":
+    case "classic mc-161625":
+
+    // Unreleased
+    case "mc-161648":
+    case "classic mc-161648":
+
+    // Skip
+    case "classic 0.0.1a":
+    case "c0.0.1a":
+
+    // Unreleased
+    case "classic 0.0.2a":
+    case "c0.0.2a":
+
+    // Unreleased
+    case "classic 0.0.3a":
+    case "c0.0.3a":
+
+    // Skipped
+    case "classic 0.0.4a":
+    case "c0.0.4a":
+    case "classic 0.0.5a":
+    case "c0.0.5a":
+    case "classic 0.0.6a":
+    case "c0.0.6a":
+    case "classic 0.0.7a":
+    case "c0.0.7a":
+    case "classic 0.0.8a":
+    case "c0.0.8a":
+
+    // Unreleased
+    case "classic 0.0.9a":
+    case "c0.0.9a":
+
+    // Unreleased
+    case "classic 0.0.10a":
+    case "c0.0.10a":
+      
+    // Lost bar early dev of 12a
+    case "classic 0.0.11a":
+    case "c0.0.11a":
+    case "classic 0.0.11a-launcher": Version = "c0.0.11a-launcher";
+    
+    // Lost
+    case "classic 0.0.12a":
+    case "c0.0.12a":
+
+    // Lost
+    case "classic 0.0.12a_01":
+    case "c0.0.12a_01":
+
+    // Lost
+    case "classic 0.0.12a_02":
+    case "c0.0.12a_02":
+
+    // Lost
+    case "classic 0.0.12a_03-1":
+    case "c0.0.12a_03-1":
+    case "classic 0.0.12a_03-2":
+    case "c0.0.12a_03-2":
+    case "classic 0.0.12a_03": Version = "c0.0.12a_03-200018";
+
+    case "classic 0.0.13a":
+    case "c0.0.13a": Version = "c0.0.13a-launcher"
+    
+    // Skipped
+    case "classic 0.0.13a_01":
+    case "c0.0.13a_01":
+    case "classic 0.0.13a_02":
+    case "c0.0.13a_02":
+    
+    // Lost
+    case "classic 0.0.13a_03-1":
+    case "classic 0.0.13a_03": Version = "c0.0.13a_03";
+    
+    case "classic 0.0.13a_03-2":
+    case "classic 0.0.13a-launcher": Version = "c0.0.13a_03-launcher";
+    
+    // Lost
+    case "classic 0.0.14a":
+    case "c0.0.14a":
+    
+    // Lost
+    case "classic 0.0.14a_01":
+    case "c0.0.14a_01":
+    
+    // Unknown
+    case "classic 0.0.14a_02":
+    case "c0.0.14a_02":
+
+    // Lost
+    case "classic 0.0.14a_03":
+    case "c0.0.14a_03":
+
+    // Lost
+    case "classic 0.0.14a_04":
+    case "c0.0.14a_04":
+
+    // Lost
+    case "classic 0.0.14a_05":
+    case "c0.0.14a_05":
+
+    // Lost
+    case "classic 0.0.14a_06":
+    case "c0.0.14a_06":
+
+    // Lost
+    case "classic 0.0.14a_07":
+    case "c0.0.14a_07":
+      
+    case "classic 0.0.14a_08": Version = "c0.0.14a_08";
+    
+    // #region Multiplayer Tests
+    // Lost bar rerelease
+    case "classic 0.0.15a-1":
+    case "c0.0.15a-1":
+    case "classic 0.0.15a":
+    case "c0.0.15a": Version = "c0.0.15a-05311904";
+    
+    // Lost
+    case "classic 0.0.15a-2":
+    case "c0.0.15a-2":
+    
+    // Lost
+    case "classic 0.0.15a-3":
+    case "c0.0.15a-3":
+    
+    // Lost
+    case "classic 0.0.15a-4":
+    case "c0.0.15a-4":
+    
+    // Lost
+    case "classic 0.0.15a-5":
+    case "c0.0.15a-5":
+    
+    // Lost
+    case "classic 0.0.15a-6":
+    case "c0.0.15a-6":
+    
+    // Lost
+    case "classic 0.0.15a-7":
+    case "c0.0.15a-7":
+    
+    // Lost
+    case "classic 0.0.15a-8":
+    case "c0.0.15a-8":
+
+    // #endregion
+    
+    // Lost
+    case "classic 0.0.15a_01":
+    case "c0.0.15a_01":
+
+    // Lost
+    case "classic 0.0.15a_01":
+    case "c0.0.15a_01":
+
+    // Lost
+    case "classic 0.0.15a_02":
+    case "c0.0.15a_02":
+
+    // Unknown
+    case "classic 0.0.15a_03":
+    case "c0.0.15a_03":
+
+    // Lost
+    case "classic 0.0.16a":
+    case "c0.0.16a":
+
+    // Lost
+    case "classic 0.0.16a_01":
+    case "c0.0.16a_01":
+
+    // Lost
+    case "classic 0.0.16a_02-1":
+    case "c0.0.16a_02-1":
+    case "classic 0.0.16a_02-2":
+    case "c0.0.16a_02-2":
+    case "classic 0.0.16a_02-3":
+    case "c0.0.16a_02-3":
+    case "classic 0.0.16a_02-4":
+    case "c0.0.16a_02-4":
+    case "classic 0.0.16a_02":
+    case "c0.0.16a_02": Version = "c0.0.16a_02-081047"
+
+    // Seemingly no rerelease and yet numbered
+    case "classic 0.0.17a-1":
+    case "c0.0.17a-1":
+    case "classic 0.0.17a-2":
+    case "c0.0.17a-2":
+    case "classic 0.0.17a":
+    case "c0.0.17a": Version = "c0.0.17a-2014"
+    
+    // Lost
+    case "classic 0.0.18a":
+    case "c0.0.18a":
+
+    // Lost
+    case "classic 0.0.18a_01":
+    case "c0.0.18a_01":
+      
+    case "classic 0.0.18a_02": Version = "c0.0.18a_02";
+    
+    // Lost
+    case "classic 0.0.19":
+    case "c0.0.19a":
+
+    // Unkown
+    case "classic 0.0.19a_01":
+    case "c0.0.19a_01":
+
+    // Lost
+    case "classic 0.0.19a_02":
+    case "c0.0.19a_02":
+
+    // Lost
+    case "classic 0.0.19a_03":
+    case "c0.0.19a_03":
+
+    case "classic 0.0.19a_04": Version = "c0.0.19a_04";
+
+    // Lost
+    case "classic 0.0.19a_05":
+    case "c0.0.19a_05":
+
+    // Lost bar rerelease
+    case "classic 0.0.19a_06-1":
+    case "c0.0.19a_06-1":
+    case "classic 0.0.19a_06-2":
+    case "c0.0.19a_06-2": Version = "c0.0.19a_06-0137";
+
+    // Lost
+    case "classic 0.0.20a":
+    case "c0.0.20a": 
+
+    case "classic 0.0.20a_01": Version = "c0.0.20a_01";
+
+    case "classic 0.0.20a_02": Version = "c0.0.20a_02";
+
+    // Lost bar rerelease
+    case "classic 0.0.21a-1":
+    case "c0.0.21a-1":
+    case "classic 0.0.21a-2":
+    case "c0.0.21a-2":
+    case "classic 0.0.21a":
+    case "c0.0.21a": Version = "c0.0.21a-2008";
+    
+    // Lost
+    case "classic 0.0.21a_01":
+    case "c0.0.21a_01":
+
+    // Lost
+    case "classic 0.0.21a_02":
+    case "c0.0.21a_02":
+
+    // Lost
+    case "classic 0.0.22a-1":
+    case "c0.0.22a-1":
+    case "classic 0.0.22a-2":
+    case "c0.0.22a-2":
+    case "classic 0.0.22a":
+    case "c0.0.22a":
+
+    // Lost
+    case "classic 0.0.22a_01":
+    case "c0.0.22a_01":
+
+    // Lost
+    case "classic 0.0.22a_02":
+    case "c0.0.22a_02":
+
+    // Lost
+    case "classic 0.0.22a_03":
+    case "c0.0.22a_03":
+
+    // Lost
+    case "classic 0.0.22a_04":
+    case "c0.0.22a_04":
+      
+    case "classic 0.0.22a_05": Version = "c0.0.22a_05";
+    
+    // Lost
+    case "classic 0.0.23a":
+    case "c0.0.23a":
+      
+    case "classic 0.0.23a_01": Version = "c0.0.23a_01";
+
+    // #region Survival Test
+    // Lost
+    case "classic 0.0.24a":
+    case "c0.0.24a":
+    case "classic 0.0.24a_survial_test":
+    case "c0.0.24a_survial_test":
+    case "classic 0.0.24a_st":
+    case "c0.0.24a_st":
+
+    // Lost
+    case "classic 0.24a_01":
+    case "c0.24a_01":
+    case "classic 0.24a_survial_test_01":
+    case "c0.24a_survial_test_01":
+    case "classic 0.24a_st_01":
+    case "c0.24a_st_01":
+
+    // Lost
+    case "classic 0.24a_02-1":
+    case "c0.24a_02-1":
+    case "classic 0.0.24a_survial_test_02-1":
+    case "c0.0.24a_survial_test_02-1":
+    case "classic 0.0.24a_st_02-1":
+    case "c0.0.24a_st_02-1":
+
+    case "classic 0.24a_02-2":
+    case "c0.0.24a_02-2":
+    case "classic 0.0.24a_survial_test_02-2":
+    case "c0.0.24a_survial_test_02-2":
+    case "classic 0.0.24a_st_02-2":
+    case "c0.0.24a_st_02-2":
+
+    case "classic 0.24a_02":
+    case "c0.24a_02":
+    case "classic 0.24a_survial_test_02":
+    case "c0.24a_survial_test_02":
+    case "classic 0.24a_st_02":
+    case "c0.24a_st_02":
+
+    case "classic 0.24a_03":
+    case "c0.24a_03":
+    case "classic 0.24a_survial_test_03":
+    case "c0.24a_survial_test_03":
+    case "classic 0.24a_st_03": Version = "c0.24_st_03"
+
+    // Lost
+    case "classic 0.25a":
+    case "c0.25a":
+    case "classic 0.25a_survial_test":
+    case "c0.25a_survial_test":
+    case "classic 0.25a_st":
+    case "c0.25a_st":
+
+    // Unknown
+    case "classic 0.25a_01":
+    case "c0.25a_01":
+    case "classic 0.25a_01_survial_test":
+    case "c0.25a_01_survial_test":
+    case "classic 0.25a_01_st":
+    case "c0.25a_01_st":
+
+    // Lost
+    case "classic 0.25a_02":
+    case "c0.25a_02":
+    case "classic 0.25a_02_survial_test":
+    case "c0.25a_02_survial_test":
+    case "classic 0.25a_02_st":
+    case "c0.25a_02_st":
+
+    // Lost
+    case "classic 0.25a_03":
+    case "c0.25a_03":
+    case "classic 0.25a_03_survial_test":
+    case "c0.25a_03_survial_test":
+    case "classic 0.25a_03_st":
+    case "c0.25a_03_st":
+
+    // Lost
+    case "classic 0.25a_04":
+    case "c0.25a_04":
+    case "classic 0.25a_04_survial_test":
+    case "c0.25a_04_survial_test":
+    case "classic 0.25a_04_st":
+    case "c0.25a_04_st":
+
+    case "classic 0.25a_05":
+    case "c0.25a_05":
+    case "classic 0.25a_05_survial_test":
+    case "c0.25a_05_survial_test":
+    case "classic 0.25a_05_st": Version = "c0.25_05_st";
+
+    // Lost
+    case "classic 0.26a":
+    case "c0.26a":
+    case "classic 0.26a_survial_test":
+    case "c0.26a_survial_test":
+    case "classic 0.26a_st":
+    case "c0.26a_st":
+
+    // #endregion
+
+    // #endregion
+
+    // #region Late Classic Creative
+    case "classic 0.27a":
+    case "c0.27a":
+    case "classic 0.27a_survial_test":
+    case "c0.27a_survial_test":
+    case "classic 0.27a_st": Version = "c0.27_st";
+
+    // Lost
+    case "classic 0.28a":
+    case "c0.28a":
+      
+    case "classic 0.28a_01": Version = "c0.28_01";
+
+    case "classic 0.29a":
+    case "c0.29a":
+    case "classic 0.29": Version = "c0.29a";
+
+    case "classic 0.29a_01":
+    case "c0.29a_01":
+    case "classic 0.29_01": Version = "c0.29_01";
+
+    case "classic 0.29a_02":
+    case "c0.29a_021":
+    case "classic 0.29_02": Version = "c0.29_02";
+
+    // What does renew even mean here
+    case "classic 0.30a":
+    case "c0.30a":
+    case "classic 0.30": 
+    case "c0.30": 
+    case "classic 0.30-c": 
+    case "c0.30-c": 
+    case "classic 0.30c": 
+    case "c0.30c": 
+    case "classic 0.30-c-2": 
+    case "c0.30-c-2": Version = "c0.30-c-1900-renew";
+
+    case "classic 0.30-c-1": 
+    case "c0.30-c-1": Version = "c0.30-c-1900";
+
+    // #endregion
+
+    // #region Indev
+    // #region Indev 0.31
+
+    // Lost
+    case "indev 0.31 20091223-0040":
+    case "indev 20091223-0040":
+    case "indev 0.31 20091223-1":
+    case "indev 20091223-1":
+
+    // Lost
+    case "indev 0.31 20091223-1457":
+    case "indev 20091223-1457":
+    case "indev 0.31 20091223-2":
+    case "indev 20091223-2":
+
+    case "indev 0.31 20091223-1459":
+    case "indev 20091223-1459":
+    case "indev 0.31 20091223-3":
+    case "indev 20091223-3":
+    case "indev 0.31 20091223":
+    case "indev 20091223": Version = "in-20091223-1459";
+
+    // Lost
+    case "indev 0.31 20091231-1856":
+    case "indev 20091231-1856":
+    case "indev 0.31 20091231-1":
+    case "indev 20091223-1":
+
+    // Lost
+    case "indev 0.31 20091231-2004":
+    case "indev 20091231-2004":
+    case "indev 0.31 20091231-2":
+    case "indev 20091223-2":
+
+    // Lost
+    case "indev 0.31 20091231-2013":
+    case "indev 20091231-2013":
+    case "indev 0.31 20091231-3":
+    case "indev 20091223-3":
+
+    // Lost
+    case "indev 0.31 20091231-2033":
+    case "indev 20091231-2033":
+    case "indev 0.31 20091231-4":
+    case "indev 20091223-4":
+    
+    // Lost
+    case "indev 0.31 20091231-2147":
+    case "indev 20091231-2147":
+    case "indev 0.31 20091231-5":
+    case "indev 20091223-5":
+
+    case "indev 0.31 20091231-2255":
+    case "indev 20091231-2255":
+    case "indev 0.31 20091231-6":
+    case "indev 20091223-6":
+    case "indev 0.31 20091231":
+    case "indev 20091223": Version = "in-20091231-2255";
+
+    // Lost
+    case "indev 0.31 20100104-2154":
+    case "indev 20100104-2154":
+    case "indev 0.31 20100104-1":
+    case "indev 20100104-1":
+
+    case "indev 0.31 20100104-2258":
+    case "indev 20100104-2258":
+    case "indev 0.31 20100104-2":
+    case "indev 20100104-2":
+    case "indev 0.31 20100104":
+    case "indev 20100104": Version = "in-20100104-2258";
+
+    // Lost
+    case "indev 0.31 20100106-1655":
+    case "indev 20100106-1655":
+    case "indev 0.31 20100106-1":
+    case "indev 20100106-1":
+
+    // Lost
+    case "indev 0.31 20100106-2158":
+    case "indev 20100106-2158":
+    case "indev 0.31 20100106-2":
+    case "indev 20100106-2":
+
+    // Lost
+    case "indev 0.31 20100106-2220":
+    case "indev 20100106-2220":
+    case "indev 0.31 20100106-3":
+    case "indev 20100106-3":
+    case "indev 0.31 20100106":
+    case "indev 20100106":
+
+    // Lost
+    case "indev 0.31 20100107-1851":
+    case "indev 20100107-1851":
+    case "indev 0.31 20100107-1":
+    case "indev 20100107-1":
+
+    // Lost
+    case "indev 0.31 20100107-1947":
+    case "indev 20100107-1947":
+    case "indev 0.31 20100107-2":
+    case "indev 20100107-2":
+
+    // Lost
+    case "indev 0.31 20100107-2010":
+    case "indev 20100107-2010":
+    case "indev 0.31 20100107-3":
+    case "indev 20100107-3":
+    case "indev 0.31 20100107":
+    case "indev 20100107":
+
+    // Lost
+    case "indev 0.31 20100109-1939":
+    case "indev 20100109-1939":
+    case "indev 0.31 20100109-1":
+    case "indev 20100109-1":
+
+    // Lost
+    case "indev 0.31 20100109-2000":
+    case "indev 20100109-2000":
+    case "indev 0.31 20100109-2":
+    case "indev 20100109-2":
+    case "indev 0.31 20100109":
+    case "indev 20100109":
+
+    case "indev 0.31 20100110-1939":
+    case "indev 20100110-1939":
+    case "indev 0.31 20100110-1":
+    case "indev 20100110-1":
+    case "indev 0.31 20100110":
+    case "indev 20100110": Version = "in-20100110"
+
+    // Lost
+    case "indev 0.31 20100111-2210":
+    case "indev 20100111-2210":
+    case "indev 0.31 20100111-1":
+    case "indev 20100111-1":
+    case "indev 0.31 20100111":
+    case "indev 20100111":
+
+    // Lost
+    case "indev 0.31 20100112-0826":
+    case "indev 20100112-0826":
+    case "indev 0.31 20100112-1":
+    case "indev 20100112-1":
+
+    // Lost
+    case "indev 0.31 20100112-1949":
+    case "indev 20100112-1949":
+    case "indev 0.31 20100112-2":
+    case "indev 20100112-2":
+    case "indev 0.31 20100112":
+    case "indev 20100112":
+
+    // Lost
+    case "indev 0.31 20100113-2015":
+    case "indev 20100113-2015":
+    case "indev 0.31 20100113-1":
+    case "indev 20100113-1":
+
+    // Lost
+    case "indev 0.31 20100113-2244":
+    case "indev 20100113-2244":
+    case "indev 0.31 20100113-2":
+    case "indev 20100113-2":
+    case "indev 0.31 20100113":
+    case "indev 20100113":
+
+    // Lost
+    case "indev 0.31 20100114":
+    case "indev 20100114":
+
+    // Lost
+    case "indev 0.31 20100122-1708":
+    case "indev 20100122-1708":
+    case "indev 0.31 20100122-1":
+    case "indev 20100122-1":
+
+    // Lost
+    case "indev 0.31 20100122-2251":
+    case "indev 20100122-2251":
+    case "indev 0.31 20100122-2":
+    case "indev 20100122-2":
+    case "indev 0.31 20100122":
+    case "indev 20100122":
+
+    // Lost
+    case "indev 0.31 20100124-2119":
+    case "indev 20100124-2119":
+    case "indev 0.31 20100124-1":
+    case "indev 20100124-1":
+
+    // Lost
+    case "indev 0.31 20100124-2134":
+    case "indev 20100124-2134":
+    case "indev 0.31 20100124-2":
+    case "indev 20100124-2":
+
+    case "indev 0.31 20100124-2310":
+    case "indev 20100124-2310":
+    case "indev 0.31 20100124-3":
+    case "indev 20100124-3":
+    case "indev 0.31 20100124":
+    case "indev 20100124": Version = "in-20100124-2310";
+
+    case "indev 0.31 20100125":
+    case "indev 20100125":
+    case "indev 0.31 20100125-2154":
+    case "indev 20100125-2154": Version = "in-20100125";
+
+    // Lost
+    case "indev 0.31 20100128-2200":
+    case "indev 20100128-2200":
+    case "indev 0.31 20100128-1":
+    case "indev 20100128-1":
+
+    case "indev 0.31 20100128-2304":
+    case "indev 20100128-2304":
+    case "indev 0.31 20100128-2":
+    case "indev 20100128-2":
+    case "indev 0.31 20100128":
+    case "indev 20100128": Version = "in-20100128-2304";
+
+    // Lost
+    case "indev 0.31 20100129-1447":
+    case "indev 20100129-1447":
+    case "indev 0.31 20100129-1":
+    case "indev 20100129-1":
+
+    case "indev 0.31 20100129-1452":
+    case "indev 20100129-1452":
+    case "indev 0.31 20100129-2":
+    case "indev 20100129-2":
+    case "indev 0.31 20100129":
+    case "indev 20100129": Version = "in-20100129-1452";
+
+    // Lost
+    case "indev 0.31 20100129-2129":
+    case "indev 20100129-2129":
+    case "indev 0.31 20100129-3":
+    case "indev 20100129-3":
+
+    // Lost
+    case "indev 0.31 20100129-2134":
+    case "indev 20100129-2134":
+    case "indev 0.31 20100129-4":
+    case "indev 20100129-4":
+      
+    // Lost
+    case "indev 0.31 20100129-2158":
+    case "indev 20100129-2158":
+    case "indev 0.31 20100129-6":
+    case "indev 20100129-6":
+      
+    // Lost
+    case "indev 0.31 20100129-2209":
+    case "indev 20100129-2209":
+    case "indev 0.31 20100129-7":
+    case "indev 20100129-7":
+      
+    // Lost
+    case "indev 0.31 20100129-2332":
+    case "indev 20100129-2332":
+    case "indev 0.31 20100129-8":
+    case "indev 20100129-8":
+
+    // Lost
+    case "indev 0.31 20100130-0057":
+    case "indev 20100130-0057":
+    case "indev 0.31 20100130-1":
+    case "indev 20100130-1":
+    case "indev 0.31 20100130-0109":
+    case "indev 20100130-0109":
+    case "indev 0.31 20100130-2":
+    case "indev 20100130-2":
+    case "indev 0.31 20100130":
+    case "indev 20100130": Version = "in-20100130"
+
+    // Lost
+    case "indev 0.31 20100131-2156":
+    case "indev 20100131-2156":
+    case "indev 0.31 20100131-1":
+    case "indev 20100131-1":
+    case "indev 0.31 20100131-2229":
+    case "indev 20100131-2229":
+    case "indev 0.31 20100131-2":
+    case "indev 20100131-2":
+    case "indev 0.31 20100131-2236":
+    case "indev 20100131-2236":
+    case "indev 0.31 20100131-3":
+    case "indev 20100131-3":
+
+    // Lost
+    case "indev 0.31 20100131-2241":
+    case "indev 20100131-2241":
+    case "indev 0.31 20100131-4":
+    case "indev 20100131-4":
+    
+    case "indev 0.31 20100131-2244":
+    case "indev 20100131-2244":
+    case "indev 0.31 20100131-5":
+    case "indev 20100131-5":
+    case "indev 0.31 20100131":
+    case "indev 20100131": Version = "in-20100131-2244";
+
+    case "indev 0.31 20100201-0025":
+    case "indev 20100201-0025":
+    case "indev 0.31 20100201-1":
+    case "indev 20100201-1": Version = "in-20100201-0025";
+
+    case "indev 0.31 20100201-2227":
+    case "indev 20100201-2227":
+    case "indev 0.31 20100201-2":
+    case "indev 20100201-2": Version = "in-20100201-2227";
+
+    case "indev 0.31 20100202-2157":
+    case "indev 20100202-2157":
+    case "indev 0.31 20100202-1":
+    case "indev 20100202-1":
+    case "indev 0.31 20100202-2311":
+    case "indev 20100202-2311":
+    case "indev 0.31 20100202-2":
+    case "indev 20100202-2":
+    case "indev 0.31 20100202-2326":
+    case "indev 20100202-2326":
+    case "indev 0.31 20100202-3":
+    case "indev 20100202-3":
+    case "indev 0.31 20100202-2330":
+    case "indev 20100202-2330":
+    case "indev 0.31 20100202-4":
+    case "indev 20100202-4":
+    case "indev 0.31 20100202":
+    case "indev 20100202": Version = "in-20100202-2330";
+
+    // Lost
+    case "indev 0.31 20100204-1541":
+    case "indev 20100204-1541":
+    case "indev 0.31 20100204-1":
+    case "indev 20100204-1":
+
+    // Lost
+    case "indev 0.31 20100204-2027":
+    case "indev 20100204-2027":
+    case "indev 0.31 20100204-2":
+    case "indev 20100204-2":
+
+    // Lost
+    case "indev 0.31 20100204-2153":
+    case "indev 20100204-2153":
+    case "indev 0.31 20100204-3":
+    case "indev 20100204-3":
+    case "indev 0.31 20100204":
+    case "indev 20100204":
+
+    // Lost
+    case "indev 0.31 20100205-1558":
+    case "indev 20100205-1558":
+    case "indev 0.31 20100205-1":
+    case "indev 20100205-1":
+
+    // Lost
+    case "indev 0.31 20100205-2241":
+    case "indev 20100205-2241":
+    case "indev 0.31 20100205-2":
+    case "indev 20100205-2":
+
+    // Lost
+    case "indev 0.31 20100206-1437":
+    case "indev 20100206-1437":
+    case "indev 0.31 20100205-1":
+    case "indev 20100205-1":
+
+    // #endregion
+
+    // Lost
+    case "indev 0.31 20100206-2034":
+    case "indev 20100206-2034":
+    case "indev 0.31 20100205-2":
+    case "indev 20100205-2":
+
+    case "indev 0.31 20100206-2103":
+    case "indev 20100206-2103":
+    case "indev 0.31 20100205-3":
+    case "indev 20100205-3":
+    case "indev 0.31 20100205":
+    case "indev 20100205": Version = "in-20100206-2103"
+
+    // Lost
+    case "indev 0.31 20100207-1057":
+    case "indev 20100207-1057":
+    case "indev 0.31 20100207-1":
+    case "indev 20100207-1":
+      
+    case "indev 0.31 20100207-1101":
+    case "indev 20100207-1101":
+    case "indev 0.31 20100207-2":
+    case "indev 20100207-2": Version = "in-20100207-1101";
+
+    // Lost
+    case "indev 0.31 20100207-1647":
+    case "indev 20100207-1647":
+    case "indev 0.31 20100207-3":
+    case "indev 20100207-3":
+
+    case "indev 0.31 20100207-1703":
+    case "indev 20100207-1703":
+    case "indev 0.31 20100207-4":
+    case "indev 20100207-4": Version = "in-20100207-1703";
+
+    // Lost
+    case "indev 0.31 20100211-2327":
+    case "indev 20100211-2327":
+    case "indev 0.31 20100211-1":
+    case "indev 20100211-1":
+
+    // Lost
+    case "indev 0.31 20100211-2333":
+    case "indev 20100211-2333":
+    case "indev 0.31 20100211-2":
+    case "indev 20100211-2":
+
+    // Lost
+    case "indev 0.31 20100211-2340":
+    case "indev 20100211-2340":
+    case "indev 0.31 20100211-3":
+    case "indev 20100211-3":
+
+    case "indev 0.31 20100212-1210":
+    case "indev 20100212-1210":
+    case "indev 0.31 20100212-1":
+    case "indev 20100212-1": Version = "in-20100212-1210";
+
+    case "indev 0.31 20100212-1622":
+    case "indev 20100212-1622":
+    case "indev 0.31 20100212-2":
+    case "indev 20100212-2": Version = "in-20100212-1622";
+
+    case "indev 0.31 20100213-2258":
+    case "indev 20100213-2258":
+    case "indev 0.31 20100213-1":
+    case "indev 20100213-1":
+    case "indev 0.31 20100213":
+    case "indev 20100213": Version = "in-20100213";
+
+    case "indev 0.31 20100214-2143":
+    case "indev 20100214-2143":
+    case "indev 0.31 20100214-1":
+    case "indev 20100214-1":
+    case "indev 0.31 20100214":
+    case "indev 20100214": Version = "in-20100214";
+
+    // Lost
+    case "indev 0.31 20100218-0011":
+    case "indev 20100218-0011":
+    case "indev 0.31 20100218-1":
+    case "indev 20100218-1":
+      
+    case "indev 0.31 20100218-0016":
+    case "indev 20100218-0016":
+    case "indev 0.31 20100218-2":
+    case "indev 20100218-1":
+    case "indev 0.31 20100218":
+    case "indev 20100218": Version = "in-20100218-0016";
+
+    case "indev 0.31 20100219":
+    case "indev 20100219":
+    case "indev 0.31 20100219-1":
+    case "indev 20100219-1": Version = "20100219";
+
+    case "indev 0.31 20100223":
+    case "indev 20100223":
+    case "indev 0.31 20100223-1":
+    case "indev 20100223-1": Version = "20100223";
+
+    // #endregion
     }
 
     // Infdev
-    else if(Version.includes("infdev")) 
+    if(Version.includes("infdev")) 
     {
       // Turns "Infdev [timecode]"  into "In-[timecode]"
       Version = "inf-" + Version.substring(7);
@@ -654,10 +1525,6 @@ async function CreateVerFile() {
 
 function CreateArticle(Data: MCDF_Article)
 {
-
-  // If null or ? then set the data to itself
-  if(Data.End != null && Data.End.substring(0, 1) == "?") Data.End = Data.Start;
-  if(Data.Start != null && Data.Start.substring(0, 1) == "?") Data.Start = Data.End;
 
   // Precomputes info
   let UpdateIndex
