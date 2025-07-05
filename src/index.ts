@@ -56,13 +56,8 @@ app.get('/', async (req, res) => {
   res.send(fs.readFileSync("./src/website/index.html").toString())
 });
 
-// Sends data
-app.get('/Articles', async (req, res) => {
-  res.send(await CreateVerFile());
-});
-
 let previousVer: string // Only used when end ver is null signifying that it was only for the one version
-function UpdateVersionID(Version: string)
+export function UpdateVersionID(Version: string)
 {
 
   // Changes rd into pc
@@ -1721,7 +1716,7 @@ function UpdateVersionID(Version: string)
     return Version;
 }
 
-async function CreateVerFile() {
+export async function CreateVerFile() {
   
   // Grabs version info from omniarchive (thank you so much Ouroya!)
   const Omni_URL = "https://meta.omniarchive.uk/v1/manifest.json";
@@ -1893,7 +1888,7 @@ async function CreateVerFile() {
   return Articles;
 }
 
-function CreateArticle(Data: MCDF_Article)
+export function CreateArticle(Data: MCDF_Article)
 {
   // Precomputes info
   let StartUpdateIndex, EndUpdateIndex;
@@ -1937,7 +1932,7 @@ function CreateArticle(Data: MCDF_Article)
   };
 }
 
-function FindReleaseUpdate(Update: string)
+export function FindReleaseUpdate(Update: string)
 {
   let UpdateIndex;
   UpdateIndex = (Info: OmniVer) => Info.id == Update;
