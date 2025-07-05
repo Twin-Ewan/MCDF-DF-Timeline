@@ -50,7 +50,10 @@ async function CreateData()
         .data(FormatedData)
         .minSegmentWidth(5)
         .maxLineHeight(30)
-        .maxHeight(10000);
+        .maxHeight(10000)
+        .onLabelClick((label, group) => {
+            window.location.href = `https://mcdf.wiki.gg/wiki/Java_Edition:${label.replace(" ", "_")}`;
+        });
 }
 
 
