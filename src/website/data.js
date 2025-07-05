@@ -51,6 +51,9 @@ async function CreateData()
         .minSegmentWidth(5)
         .maxLineHeight(30)
         .maxHeight(10000)
+        .leftMargin(-3)
+        .rightMargin(300)
+        .zColorScale(d3.scaleOrdinal([`#8ED973`]))
         .onLabelClick((label, group) => {
             window.location.href = `https://mcdf.wiki.gg/wiki/Java_Edition:${label.replace(" ", "_")}`;
         });
