@@ -1,7 +1,5 @@
 import express from 'express';
 import fs from 'fs';
-import { version } from 'os';
-// import TimelinesChart from 'timelines-chart';
 
 const app = express()
 const port = 3000
@@ -17,13 +15,19 @@ interface ArticleData {
 
   FullReleaseDate: Date; 
 
-  StartVer: string[];
-  StartDisplay: string[];
-  StartDate: Date[];
+  Range: VersionData[]
+}
 
-  EndVer: string[];
-  EndDisplay: string[];
-  EndDate: Date[];
+interface VersionData {
+  StartId: string;
+  StartDisplay: string;
+  StartDate: Date;
+  StartRelease: string;
+
+  EndId: string;
+  EndDisplay: string;
+  EndDate: Date;
+  EndRelease: string;
 }
 
 interface MCDF_Article {
@@ -50,6 +54,11 @@ let ReleaseVersion: Date[] = [];
 
 app.get('/', async (req, res) => {
   res.send(fs.readFileSync("./src/website/index.html").toString())
+});
+
+// Sends data
+app.get('/Articles', async (req, res) => {
+  res.send(await CreateVerFile());
 });
 
 let previousVer: string // Only used when end ver is null signifying that it was only for the one version
@@ -103,41 +112,29 @@ function UpdateVersionID(Version: string)
 
     case "pc-132211": // CEST
     case "pc-132011": // UTC
-      
-Version = "pc-132011-launcher";
-break;
+      Version = "pc-132011-launcher";
       break;
-break;
 
     case "rd-132328": // CEST
     case "rd-132128": // UTC
-      
-Version = "pc-132011-launcher";
-break;
+      Version = "pc-132011-launcher";
       break;
-break;
 
     // Unreleased
-    case "pc-120090515": // CEST
-    case "pc-120090315": // UTC
+    case "pc-20090515": // CEST
+    case "pc-20090315": // UTC
     case "pc-1160015": // CEST
     case "pc-1152215": // UTC
 
     case "pc-160052": // CEST
-    case "pc-152252": // UTC
-      
-Version = "pc-152252-launcher";
-break; 
+    case "pc-152252": // UTC    
+      Version = "pc-152252-launcher";
       break;
-break;
 
     case "pc-161348": // CEST
-    case "pc-161148": // UTC
-      
-Version = "pc-161148-launcher";
-break;
+    case "pc-161148": // UTC  
+      Version = "pc-161148-launcher";
       break;
-break;
 
     // #endregion
 
@@ -1729,8 +1726,7 @@ async function CreateVerFile() {
   // Grabs version info from omniarchive (thank you so much Ouroya!)
   const Omni_URL = "https://meta.omniarchive.uk/v1/manifest.json";
 
-  const settings = { method: "Get" };
-  let omniRes = await fetch(Omni_URL, settings)
+  let omniRes = await fetch(Omni_URL, { method: "Get" })
   let OmniComplete = await omniRes.json();
     
   // Sets omni to be version data only instead of including latest update
@@ -1749,7 +1745,7 @@ async function CreateVerFile() {
   const mcdf_URL = "https://mcdf.wiki.gg/wiki/Special:CargoExport?tables=Version_Range%2C&&fields=Version_Range._pageName%2C+Version_Range.Start%2C+Version_Range.End%2C&&order+by=&limit=2000&format=json";
 
   // Thank god for tutorials
-  const mcdfRes = await fetch(mcdf_URL, settings)
+  const mcdfRes = await fetch(mcdf_URL, { method: "Get" })
   let mcdf: MCDF_Articles = await mcdfRes.json();
 
   let BannedSymbols: string[] = ["≤ ", "≤", "≈", "≈ ", "~", "~ ", "≥", "≥ "];
@@ -1776,6 +1772,15 @@ async function CreateVerFile() {
       i--;
       continue;
     }
+
+    // Removes Lost Version Discontinued Feature as otherwise it'd link to a real version and will confuse people
+    if(mcdf[i]._pageName == "Java Edition:Lost Version Discontinued Feature") 
+    {
+      mcdf.splice(mcdf.indexOf(mcdf[i]), 1);
+      i--;
+      continue;
+    }
+
 
     // Removed banned symbols
     BannedSymbols.forEach(banned => {
@@ -1839,26 +1844,35 @@ async function CreateVerFile() {
     {
       let UpdateIndex
       UpdateIndex = (UpdateInfo: OmniVer) => UpdateInfo.id == mcdf[i].Start;
-      const StartTime = Omni[Omni.findIndex(UpdateIndex)].releaseTime;
+      const StartUpdateInfo = Omni[Omni.findIndex(UpdateIndex)];
 
-      let EndTime
+      let EndUpdateInfo;
 
       // If null then it only existed for 1 version and if its ? then say screw it
       if(mcdf[i].End != mcdf[i].Start)
       {
         UpdateIndex = (UpdateInfo: OmniVer) => UpdateInfo.id == mcdf[i].End;
-        EndTime = Omni[Omni.findIndex(UpdateIndex)].releaseTime;
+        EndUpdateInfo = Omni[Omni.findIndex(UpdateIndex)];
       }
-      else EndTime = StartTime;
+      else EndUpdateInfo = StartUpdateInfo;
 
-      previousArticle.StartDate.push(StartTime);
-      previousArticle.EndDate.push(EndTime);
+      let StartRelease = "";
+      let EndRelease = "";
+      if(StartUpdateInfo.phase == "post-1.0") StartRelease = FindReleaseUpdate(StartUpdateInfo.id).id;
+      if(EndUpdateInfo.phase == "post-1.0") EndRelease = FindReleaseUpdate(EndUpdateInfo.id).id;
 
-      previousArticle.StartVer.push(mcdf[i].Start);
-      previousArticle.EndVer.push(mcdf[i].End);
+      previousArticle.Range.push({
+        StartId: mcdf[i].Start,
+        StartDisplay: mcdf[i].StartDisplay,
+        StartDate: StartUpdateInfo.releaseTime,
+        StartRelease: StartRelease,
 
-      previousArticle.StartDisplay.push(mcdf[i].StartDisplay);
-      previousArticle.EndDisplay.push(mcdf[i].EndDisplay);
+        EndId: mcdf[i].End,
+        EndDisplay: mcdf[i].EndDisplay,
+        EndDate: EndUpdateInfo.releaseTime,
+        EndRelease: EndRelease,
+      });
+
     }
     else 
     {
@@ -1867,45 +1881,16 @@ async function CreateVerFile() {
     }
   };
 
-  // Manually sort out each 
+  // Sorts each range by date of first occurance
   Articles.forEach(article => {
-    article.StartDate.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+    article.Range.sort((a, b) => new Date(a.StartDate).getTime() - new Date(b.EndDate).getTime());
+    article.FullReleaseDate = FindReleaseUpdate(article.Range[0].StartId).releaseTime;
   });
-  
+
   // Sorts each article in order (new Date([VersionDate]) neccessary because of https://stackoverflow.com/questions/2627650/why-javascript-gettime-is-not-a-function)
   Articles.sort((a, b) => new Date(a.FullReleaseDate).getTime() - new Date(b.FullReleaseDate).getTime());
 
-  Articles.forEach(data => {
-
-    let Output = data.Title + ": ";
-    for(let i = 0; i < data.StartVer.length; i++)
-    {
-      let StartFull: OmniVer = FindReleaseUpdate(data.StartVer[i]); 
-      let StartText: string = "";
-
-      let EndFull: OmniVer = FindReleaseUpdate(data.EndVer[i]);
-      let EndText: string = "";
-
-      // Removes timecode
-      if(StartFull.phase == "post-1.0") StartFull.id = StartFull.id.split('-')[0];
-      if(EndFull.phase == "post-1.0") EndFull.id = EndFull.id.split('-')[0];
-
-      if(data.StartVer[i] != StartFull.id) StartText = " (" + StartFull.id + ")";
-
-      if(data.EndVer[i] != EndFull.id) EndText = " (" + EndFull.id + ")";
-
-      if(data.EndVer[i] == data.StartVer[i]) Output += data.StartDisplay[i] + StartText;
-      else 
-      {
-        StartText += " - ";
-        Output += data.StartDisplay[i] + StartText + data.EndDisplay[i] + EndText;
-      }
-
-      if(data.StartVer.length > i + 1) Output += ", "
-    }
-
-    console.log(Output);
-  });
+  return Articles;
 }
 
 function CreateArticle(Data: MCDF_Article)
@@ -1919,26 +1904,33 @@ function CreateArticle(Data: MCDF_Article)
   EndUpdateIndex = (UpdateInfo: OmniVer) => UpdateInfo.id == Data.End;
   const EndUpdateInfo = Omni[Omni.findIndex(EndUpdateIndex)];
 
-  let FullReleaseDate: Date = FindReleaseUpdate(Data.Start).releaseTime;
+  // Assings dummy date as it will be done later after sorting all articles and sorting their ranges
+  let FullReleaseDate: Date = new Date(); 
+
+  let StartRelease = "";
+  let EndRelease = "";
+  if(StartUpdateInfo.phase == "post-1.0") StartRelease = FindReleaseUpdate(StartUpdateInfo.id).id;
+  if(EndUpdateInfo.phase == "post-1.0") EndRelease = FindReleaseUpdate(EndUpdateInfo.id).id;
 
   return {
 
-  StartVer: [Data.Start],
-  EndVer: [Data.End],
+  Range: [({
+      StartId: Data.Start,
+      StartDisplay: Data.StartDisplay,
+      StartDate: StartUpdateInfo.releaseTime,
+      StartRelease: StartRelease,
 
-  StartDisplay: [Data.StartDisplay],
-  EndDisplay: [Data.EndDisplay],
-
+      EndId: Data.End,
+      EndDisplay: Data.EndDisplay,
+      EndDate: EndUpdateInfo.releaseTime,
+      EndRelease: EndRelease,
+    })],
+    
   // Removes the "Java Edition:" from page names
   Title: Data._pageName.substring(Data._pageName.indexOf(":") + 1),
 
   // Assigns it the edition
   Edition: Data._pageName.split(':')[0],
-
-  // Grabs the version date from Omni
-
-  StartDate: [StartUpdateInfo.releaseTime],
-  EndDate: [EndUpdateInfo.releaseTime],
 
   FullReleaseDate: FullReleaseDate,
 
@@ -1965,6 +1957,6 @@ function FindReleaseUpdate(Update: string)
 }
 
 app.listen(port, () => {
-  CreateVerFile();
+  CreateVerFile() // Creates new ver on start
   console.log(`Example app listening on port ${port}`);
 })
