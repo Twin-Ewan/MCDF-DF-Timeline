@@ -1783,15 +1783,8 @@ export async function CreateVerFile() {
       mcdf[i].End = mcdf[i].End.replace(banned, "");
     });
 
-    // special code for "entity.KillerBuggy.name" and "bobs dog"
-    if(mcdf[i]._pageName == "Java Edition:&quot;entity.KillerBunny.name&quot; Named Regular Rabbit") 
-      mcdf[i]._pageName = "Java Edition:\"entity.KillerBunny.name\" Named Regular Rabbit";
-
-    if(mcdf[i]._pageName == "Java Edition:Bob&#039;s Dogs") 
-      mcdf[i]._pageName = "Java Edition:Bob's Dogs";
-
-    if(mcdf[i]._pageName == "Java Edition:Rabbit&#039;s Foot") 
-      mcdf[i]._pageName = "Java Edition:Rabbit's Foot";
+    mcdf[i]._pageName = mcdf[i]._pageName.replace("&quot", '"');
+    mcdf[i]._pageName = mcdf[i]._pageName.replace("&#039", "'");
 
     // If it uses present template then manually update it to current
     if((mcdf[i].End).includes("present") ) mcdf[i].End = Omni[0].id;

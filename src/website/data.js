@@ -1388,7 +1388,7 @@ function UpdateVersionID(Version) {
 }
 async function CreateVerFile() {
     // Grabs version info from omniarchive (thank you so much Ouroya!)
-    const Omni_URL = "https://corsproxy.io/?url=https://meta.omniarchive.uk/v1/manifest.json";
+    const Omni_URL = "https://meta.omniarchive.uk/v1/manifest.json";
     let omniRes = await fetch(Omni_URL, { method: "Get" });
     let OmniComplete = await omniRes.json();
     // Sets omni to be version data only instead of including latest update
@@ -1403,7 +1403,7 @@ async function CreateVerFile() {
         else if (Omni[i].id == "c0.30-c-1900-renew")
             Omni[i].releaseTime = new Date("2009-12-01T00:00:00+00:00");
     }
-    const mcdf_URL = "https://corsproxy.io/?url=https://mcdf.wiki.gg/wiki/Special:CargoExport?tables=Version_Range%2C&&fields=Version_Range._pageName%2C+Version_Range.Start%2C+Version_Range.End%2C&&order+by=&limit=2000&format=json";
+    const mcdf_URL = "https://mcdf.wiki.gg/wiki/Special:CargoExport?tables=Version_Range%2C&&fields=Version_Range._pageName%2C+Version_Range.Start%2C+Version_Range.End%2C&&order+by=&limit=2000&format=json";
     // Thank god for tutorials
     const mcdfRes = await fetch(mcdf_URL, { method: "Get" });
     let mcdf = await mcdfRes.json();
@@ -1442,13 +1442,8 @@ async function CreateVerFile() {
             mcdf[i].Start = mcdf[i].Start.replace(banned, "");
             mcdf[i].End = mcdf[i].End.replace(banned, "");
         });
-        // special code for "entity.KillerBuggy.name" and "bobs dog"
-        if (mcdf[i]._pageName == "Java Edition:&quot;entity.KillerBunny.name&quot; Named Regular Rabbit")
-            mcdf[i]._pageName = "Java Edition:\"entity.KillerBunny.name\" Named Regular Rabbit";
-        if (mcdf[i]._pageName == "Java Edition:Bob&#039;s Dogs")
-            mcdf[i]._pageName = "Java Edition:Bob's Dogs";
-        if (mcdf[i]._pageName == "Java Edition:Rabbit&#039;s Foot")
-            mcdf[i]._pageName = "Java Edition:Rabbit's Foot";
+        mcdf[i]._pageName = mcdf[i]._pageName.replace("&quot", '"');
+        mcdf[i]._pageName = mcdf[i]._pageName.replace("&#039", "'");
         // If it uses present template then manually update it to current
         if ((mcdf[i].End).includes("present"))
             mcdf[i].End = Omni[0].id;
