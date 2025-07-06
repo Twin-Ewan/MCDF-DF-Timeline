@@ -12,6 +12,7 @@ let FormatedData = [{
 
 CreateData()
 
+let timeline;
 async function CreateData()
 {
     let Articles = await CreateVerFile();
@@ -45,7 +46,7 @@ async function CreateData()
 
     FormatedData[0].data.splice(0, 1); // I DONT KNOW WHY THERES A EMPTY ONE
 
-    new TimelinesChart(document.body)
+    timeline = new TimelinesChart(document.body)
         .zQualitative(true)
         .data(FormatedData)
         .minSegmentWidth(5)
@@ -57,8 +58,30 @@ async function CreateData()
         .onLabelClick((label, group) => {
             window.location.href = `https://mcdf.wiki.gg/wiki/Java_Edition:${label.replace(" ", "_")}`;
         });
+
+    UpdateColourScheme(false);
 }
 
+function UpdateColourScheme(reload)
+{
+    switch(document.getElementById("Schemes").value)
+    {
+        case "colourful":
+            {
+                 timeline.zColorScale(d3.scaleOrdinal([`#A3DFA3`])); 
+                 document.body.style.backgroundColor = "B0E0E6";
+                 break;
+            }
+        case "greyscale":
+            {
+                 timeline.zColorScale(d3.scaleOrdinal([`#656565`])); 
+                 document.body.style.backgroundColor = "959595";
+                 break;
+            }
+    }
+
+    if(reload) location.reload();
+}
 
 function DisplayArticle(Article)
 {

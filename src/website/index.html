@@ -1,15 +1,26 @@
 <head>
+  <!DOCTYPE html>
   <script src='//cdn.jsdelivr.net/npm/timelines-chart'></script>
-  
+
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 
   <script src='./data.js'></script>
+
+  <link rel="stylesheet" type="text/css" href="styles.css">
   
 </head>
 
-<body>
+<body style="overflow-x: hidden;">
 
-  
+  <div style="position: fixed; padding: 2px 5px;">
+    <label>Colour Scheme:</label>
+
+    <select id="Schemes" onchange=UpdateColourScheme(true)>
+      <option value="colourful">Colourful</option>
+      <option value="greyscale">Greyscale</option>
+    </select> 
+  </div>
+
   <!--Graph goes here <3-->
 
 </body>
