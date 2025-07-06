@@ -1784,7 +1784,7 @@ export async function CreateVerFile() {
     });
 
     mcdf[i]._pageName = mcdf[i]._pageName.replace("&quot", '"');
-    mcdf[i]._pageName = mcdf[i]._pageName.replace("&#039", "'");
+    mcdf[i]._pageName = mcdf[i]._pageName.replace("&#039;", "'");
 
     // If it uses present template then manually update it to current
     if((mcdf[i].End).includes("present") ) mcdf[i].End = Omni[0].id;
