@@ -1719,7 +1719,7 @@ export function UpdateVersionID(Version: string)
 export async function CreateVerFile() {
   
   // Grabs version info from omniarchive (thank you so much Ouroya!)
-  const Omni_URL = "https://meta.omniarchive.uk/v1/manifest.json";
+  const Omni_URL = "https://corsproxy.io/?url=https://meta.omniarchive.uk/v1/manifest.json";
 
   let omniRes = await fetch(Omni_URL, { method: "Get" })
   let OmniComplete = await omniRes.json();
@@ -1737,7 +1737,7 @@ export async function CreateVerFile() {
     else if(Omni[i].id == "c0.30-c-1900-renew") Omni[i].releaseTime = new Date("2009-12-01T00:00:00+00:00");
   }
 
-  const mcdf_URL = "https://mcdf.wiki.gg/wiki/Special:CargoExport?tables=Version_Range%2C&&fields=Version_Range._pageName%2C+Version_Range.Start%2C+Version_Range.End%2C&&order+by=&limit=2000&format=json";
+  const mcdf_URL = "https://corsproxy.io/?url=https://mcdf.wiki.gg/wiki/Special:CargoExport?tables=Version_Range%2C&&fields=Version_Range._pageName%2C+Version_Range.Start%2C+Version_Range.End%2C&&order+by=&limit=2000&format=json";
 
   // Thank god for tutorials
   const mcdfRes = await fetch(mcdf_URL, { method: "Get" })
