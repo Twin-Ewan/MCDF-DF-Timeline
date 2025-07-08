@@ -1871,12 +1871,11 @@ export async function CreateVerFile() {
 
   // Sorts each range by date of first occurance
   Articles.forEach(article => {
-    article.Range.sort((a, b) => new Date(a.StartDate).getTime() - new Date(b.EndDate).getTime());
-    article.FullReleaseDate = FindReleaseUpdate(article.Range[0].StartId).releaseTime;
+    article.Range.sort((a, b) => new Date(a.StartDate).getTime() - new Date(b.StartDate).getTime());
   });
 
   // Sorts each article in order (new Date([VersionDate]) neccessary because of https://stackoverflow.com/questions/2627650/why-javascript-gettime-is-not-a-function)
-  Articles.sort((a, b) => new Date(a.FullReleaseDate).getTime() - new Date(b.FullReleaseDate).getTime());
+  Articles.sort((a, b) => new Date(a.Range[0].StartDate).getTime() - new Date(b.Range[0].StartDate).getTime());
 
   return Articles;
 }
