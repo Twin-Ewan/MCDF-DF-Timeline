@@ -1846,8 +1846,16 @@ export async function CreateVerFile() {
 
       let StartRelease = "";
       let EndRelease = "";
-      if(StartUpdateInfo.phase == "post-1.0") StartRelease = FindReleaseUpdate(StartUpdateInfo.id).id;
-      if(EndUpdateInfo.phase == "post-1.0") EndRelease = FindReleaseUpdate(EndUpdateInfo.id).id;
+      if(StartUpdateInfo.phase == "post-1.0") 
+      {
+        StartRelease = FindReleaseUpdate(StartUpdateInfo.id).id;
+        StartRelease = StartRelease.split("-")[0] // cuts off before the timecode (thanks 1.16)
+      }
+      if(EndUpdateInfo.phase == "post-1.0") 
+      {
+        EndRelease = FindReleaseUpdate(EndUpdateInfo.id).id;
+        EndRelease = EndRelease.split("-")[0] // cuts off before the timecode (thanks 1.16)
+      }
 
       previousArticle.Range.push({
         StartId: mcdf[i].Start,
@@ -1896,8 +1904,16 @@ export function CreateArticle(Data: MCDF_Article)
 
   let StartRelease = "";
   let EndRelease = "";
-  if(StartUpdateInfo.phase == "post-1.0") StartRelease = FindReleaseUpdate(StartUpdateInfo.id).id;
-  if(EndUpdateInfo.phase == "post-1.0") EndRelease = FindReleaseUpdate(EndUpdateInfo.id).id;
+  if(StartUpdateInfo.phase == "post-1.0") 
+  {
+    StartRelease = FindReleaseUpdate(StartUpdateInfo.id).id;
+    StartRelease = StartRelease.split("-")[0] // cuts off before the timecode (thanks 1.16)
+  }
+  if(EndUpdateInfo.phase == "post-1.0") 
+  {
+    EndRelease = FindReleaseUpdate(EndUpdateInfo.id).id;
+    EndRelease = EndRelease.split("-")[0] // cuts off before the timecode (thanks 1.16)
+  }
 
   return {
 

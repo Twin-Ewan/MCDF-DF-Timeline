@@ -1495,10 +1495,14 @@ async function CreateVerFile() {
                 EndUpdateInfo = StartUpdateInfo;
             let StartRelease = "";
             let EndRelease = "";
-            if (StartUpdateInfo.phase == "post-1.0")
+            if (StartUpdateInfo.phase == "post-1.0") {
                 StartRelease = FindReleaseUpdate(StartUpdateInfo.id).id;
-            if (EndUpdateInfo.phase == "post-1.0")
+                StartRelease = StartRelease.split("-")[0]; // cuts off before the timecode (thanks 1.16)
+            }
+            if (EndUpdateInfo.phase == "post-1.0") {
                 EndRelease = FindReleaseUpdate(EndUpdateInfo.id).id;
+                EndRelease = EndRelease.split("-")[0]; // cuts off before the timecode (thanks 1.16)
+            }
             previousArticle.Range.push({
                 StartId: mcdf[i].Start,
                 StartDisplay: mcdf[i].StartDisplay,
@@ -1520,7 +1524,6 @@ async function CreateVerFile() {
     Articles.forEach(article => {
         article.Range.sort((a, b) => new Date(a.StartDate).getTime() - new Date(b.StartDate).getTime());
     });
-    
     // Sorts each article in order (new Date([VersionDate]) neccessary because of https://stackoverflow.com/questions/2627650/why-javascript-gettime-is-not-a-function)
     Articles.sort((a, b) => new Date(a.Range[0].StartDate).getTime() - new Date(b.Range[0].StartDate).getTime());
     return Articles;
@@ -1536,10 +1539,14 @@ function CreateArticle(Data) {
     let FullReleaseDate = new Date();
     let StartRelease = "";
     let EndRelease = "";
-    if (StartUpdateInfo.phase == "post-1.0")
+    if (StartUpdateInfo.phase == "post-1.0") {
         StartRelease = FindReleaseUpdate(StartUpdateInfo.id).id;
-    if (EndUpdateInfo.phase == "post-1.0")
+        StartRelease = StartRelease.split("-")[0]; // cuts off before the timecode (thanks 1.16)
+    }
+    if (EndUpdateInfo.phase == "post-1.0") {
         EndRelease = FindReleaseUpdate(EndUpdateInfo.id).id;
+        EndRelease = EndRelease.split("-")[0]; // cuts off before the timecode (thanks 1.16)
+    }
     return {
         Range: [({
                 StartId: Data.Start,
