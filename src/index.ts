@@ -1649,11 +1649,6 @@ export function UpdateVersionID(Version: string)
       case "1.14.2-pre4": 
         Version = "1.14.2-pre4-270720";
         break;
-
-      // Its normally "deep dark experimental snapshot 1" but 
-      case "deep dark-exp1": 
-        Version = "1.19-exp1";
-        break;
       
       case "20w14∞": 
         Version = "20w14infinite";
@@ -1687,6 +1682,7 @@ export function UpdateVersionID(Version: string)
         break;
 
       case "1.19 deep dark-exp1":
+      case "deep dark-exp1":
         Version = "1.19-exp1"
         break;
       
@@ -1832,6 +1828,7 @@ export async function CreateVerFile() {
   for(let i = 1; i < mcdf.length; i++)
   {
     // Checks if is a diffrent range the same article
+    console.log(mcdf[i]);
     if("Java Edition:" + previousArticle.Title == mcdf[i]._pageName)
     {
       let UpdateIndex

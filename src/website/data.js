@@ -100,7 +100,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 
 let Omni;
-let previousVer; // Only used when end ver is null signifying that it was only for the one version
+let ReleaseVersion = [];
 app.get('/', async (req, res) => {
     res.send(fs_1.default.readFileSync("./src/website/index.html").toString());
 });
@@ -1339,10 +1339,6 @@ function UpdateVersionID(Version) {
         case "1.14.2-pre4":
             Version = "1.14.2-pre4-270720";
             break;
-        // Its normally "deep dark experimental snapshot 1" but 
-        case "deep dark-exp1":
-            Version = "1.19-exp1";
-            break;
         case "20w14∞":
             Version = "20w14infinite";
             break;
@@ -1368,6 +1364,7 @@ function UpdateVersionID(Version) {
             Version = "1.16.5-rc1-1558";
             break;
         case "1.19 deep dark-exp1":
+        case "deep dark-exp1":
             Version = "1.19-exp1";
             break;
         case "22w12oneblockatatime":
@@ -1488,6 +1485,7 @@ async function CreateVerFile() {
     Articles.push(previousArticle);
     for (let i = 1; i < mcdf.length; i++) {
         // Checks if is a diffrent range the same article
+        console.log(mcdf[i]);
         if ("Java Edition:" + previousArticle.Title == mcdf[i]._pageName) {
             let UpdateIndex;
             UpdateIndex = (UpdateInfo) => UpdateInfo.id == mcdf[i].Start;
