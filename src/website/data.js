@@ -101,6 +101,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 
 let Omni;
 let previousVer; // Only used when end ver is null signifying that it was only for the one version
+app.get('/', async (req, res) => {
+    res.send(fs_1.default.readFileSync("./src/website/index.html").toString());
+});
+let previousVer; // Only used when end ver is null signifying that it was only for the one version
 function UpdateVersionID(Version) {
     // Changes rd into pc
     Version = Version.replace("pre-classic rd-", "pc-");
@@ -1363,6 +1367,9 @@ function UpdateVersionID(Version) {
         case "1.16.5-rc1":
             Version = "1.16.5-rc1-1558";
             break;
+        case "1.19 deep dark-exp1":
+            Version = "1.19-exp1";
+            break;
         case "22w12oneblockatatime":
         case "22w13aoneblockatatime":
             Version = "22w13oneblockatatime";
@@ -1535,6 +1542,7 @@ function CreateArticle(Data) {
     const StartUpdateInfo = Omni[Omni.findIndex(StartUpdateIndex)];
     EndUpdateIndex = (UpdateInfo) => UpdateInfo.id == Data.End;
     const EndUpdateInfo = Omni[Omni.findIndex(EndUpdateIndex)];
+    console.log(Data.End);
     // Assings dummy date as it will be done later after sorting all articles and sorting their ranges
     let FullReleaseDate = new Date();
     let StartRelease = "";

@@ -1685,6 +1685,10 @@ export function UpdateVersionID(Version: string)
       case "1.16.5-rc1": 
         Version = "1.16.5-rc1-1558";
         break;
+
+      case "1.19 deep dark-exp1":
+        Version = "1.19-exp1"
+        break;
       
       case "22w12oneblockatatime":
       case "22w13aoneblockatatime": 
@@ -1898,6 +1902,8 @@ export function CreateArticle(Data: MCDF_Article)
 
   EndUpdateIndex = (UpdateInfo: OmniVer) => UpdateInfo.id == Data.End;
   const EndUpdateInfo = Omni[Omni.findIndex(EndUpdateIndex)];
+
+  console.log(Data.End)
 
   // Assings dummy date as it will be done later after sorting all articles and sorting their ranges
   let FullReleaseDate: Date = new Date(); 
