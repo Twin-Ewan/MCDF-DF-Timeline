@@ -1273,20 +1273,20 @@ export function UpdateVersionID(Version: string)
       Version = "b1.9-pre4-1435";
       break;
 
-    case "RC1": 
+    case "rc1":  
       Version = "1.0.0-rc1";
       break;
 
-    case "RC2-1": 
+    case "rc2-1": 
       Version = "1.0.0-rc2-1633";
       break;
 
-    case "RC2-2": 
+    case "rc2-2": 
       Version = "1.0.0-rc2-1649";
       break;
 
-    case "RC2":
-    case "RC2-3": 
+    case "rc2":
+    case "rc2-3": 
       Version = "1.0.0-rc2-1656";
       break;
 

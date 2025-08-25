@@ -101,6 +101,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 
 let Omni;
 let ReleaseVersion = [];
+app.get('/', async (req, res) => {
+    res.send(fs_1.default.readFileSync("./src/website/index.html").toString());
+});
 let previousVer; // Only used when end ver is null signifying that it was only for the one version
 function UpdateVersionID(Version) {
     // Changes rd into pc
@@ -1034,17 +1037,17 @@ function UpdateVersionID(Version) {
         case "b1.9-pre4-2":
             Version = "b1.9-pre4-1435";
             break;
-        case "RC1":
+        case "rc1":
             Version = "1.0.0-rc1";
             break;
-        case "RC2-1":
+        case "rc2-1":
             Version = "1.0.0-rc2-1633";
             break;
-        case "RC2-2":
+        case "rc2-2":
             Version = "1.0.0-rc2-1649";
             break;
-        case "RC2":
-        case "RC2-3":
+        case "rc2":
+        case "rc2-3":
             Version = "1.0.0-rc2-1656";
             break;
         case "1.0.0 tominecon":
