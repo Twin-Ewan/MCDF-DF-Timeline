@@ -101,6 +101,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 
 let Omni;
 let ReleaseVersion = [];
+app.get('/', async (req, res) => {
+    res.send(fs_1.default.readFileSync("./src/website/index.html").toString());
+});
 let previousVer; // Only used when end ver is null signifying that it was only for the one version
 function UpdateVersionID(Version) {
     // Changes rd into pc
@@ -1066,8 +1069,11 @@ function UpdateVersionID(Version) {
         // Wiki says nothing of a rerelease?
         case "12w17a":
         case "12w17a-1":
-        case "12w17a-1":
+        case "12w17a-2":
             Version = "12w17a-1424";
+            break;
+        case "1.2":
+            Version = "1.2-pre";
             break;
         // Wiki says nothing of a rerelease?
         case "1.3-pre":
@@ -1082,6 +1088,9 @@ function UpdateVersionID(Version) {
         case "12w32a-2":
             Version = "12w32a-1532";
             break;
+        case "1.4":
+            Version = "1.4-pre";
+            break;
         case "1.4.1-pre":
         case "1.4.1-pre-1":
         case "1.4.1-pre-2":
@@ -1090,12 +1099,9 @@ function UpdateVersionID(Version) {
         case "1.4.3":
             Version = "1.4.3-pre";
             break;
-        case "1.4.6-pre":
-        case "1.4.6-pre-2":
-            Version = "1.4.6-pre-1521";
-            break;
         case "1.4.5-pre":
         case "1.4.5-pre-1":
+        case "1.4.5-pre-2":
             Version = "1.4.5-pre-160924";
             break;
         case "1.4.6-pre-1":
@@ -1175,6 +1181,7 @@ function UpdateVersionID(Version) {
             Version = "2.0-purple";
             break;
         // How do you mess up this badly
+        case "13w16a-1":
         case "13w16a-2":
             Version = "13w16a-181812";
             break;
@@ -1182,7 +1189,6 @@ function UpdateVersionID(Version) {
             Version = "13w16a-191517";
             break;
         case "13w16a-4":
-        case "13w16a-1":
         case "13w16a":
             Version = "13w16a-192037";
             break;
@@ -1537,7 +1543,6 @@ function CreateArticle(Data) {
     const StartUpdateInfo = Omni[Omni.findIndex(StartUpdateIndex)];
     EndUpdateIndex = (UpdateInfo) => UpdateInfo.id == Data.End;
     const EndUpdateInfo = Omni[Omni.findIndex(EndUpdateIndex)];
-    console.log(Data.End);
     // Assings dummy date as it will be done later after sorting all articles and sorting their ranges
     let FullReleaseDate = new Date();
     let StartRelease = "";
