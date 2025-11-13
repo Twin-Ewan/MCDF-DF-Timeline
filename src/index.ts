@@ -1314,8 +1314,12 @@ export function UpdateVersionID(Version: string)
       // Wiki says nothing of a rerelease?
       case "12w17a":
       case "12w17a-1":
-      case "12w17a-1": 
+      case "12w17a-2": 
         Version = "12w17a-1424";
+        break;
+
+      case "1.2":
+        Version = "1.2-pre";
         break;
 
       // Wiki says nothing of a rerelease?
@@ -1333,6 +1337,10 @@ export function UpdateVersionID(Version: string)
         Version = "12w32a-1532";
         break;
 
+      case "1.4":
+        Version = "1.4-pre";
+        break;
+
       case "1.4.1-pre":
       case "1.4.1-pre-1":
       case "1.4.1-pre-2": 
@@ -1343,13 +1351,9 @@ export function UpdateVersionID(Version: string)
         Version = "1.4.3-pre";
         break;
 
-      case "1.4.6-pre":
-      case "1.4.6-pre-2": 
-        Version = "1.4.6-pre-1521";
-        break;
-
       case "1.4.5-pre":
       case "1.4.5-pre-1": 
+      case "1.4.5-pre-2": 
         Version = "1.4.5-pre-160924";
         break;
 
@@ -1450,6 +1454,7 @@ export function UpdateVersionID(Version: string)
         break;
 
       // How do you mess up this badly
+      case "13w16a-1":
       case "13w16a-2": 
         Version = "13w16a-181812";
         break;
@@ -1459,7 +1464,6 @@ export function UpdateVersionID(Version: string)
         break;
 
       case "13w16a-4":
-      case "13w16a-1":
       case "13w16a": 
         Version = "13w16a-192037";
         break;
@@ -1899,8 +1903,6 @@ export function CreateArticle(Data: MCDF_Article)
 
   EndUpdateIndex = (UpdateInfo: OmniVer) => UpdateInfo.id == Data.End;
   const EndUpdateInfo = Omni[Omni.findIndex(EndUpdateIndex)];
-
-  console.log(Data.End)
 
   // Assings dummy date as it will be done later after sorting all articles and sorting their ranges
   let FullReleaseDate: Date = new Date(); 
