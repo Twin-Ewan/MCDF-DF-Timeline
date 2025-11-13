@@ -101,9 +101,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 
 let Omni;
 let ReleaseVersion = [];
-app.get('/', async (req, res) => {
-    res.send(fs_1.default.readFileSync("./src/website/index.html").toString());
-});
 let previousVer; // Only used when end ver is null signifying that it was only for the one version
 function UpdateVersionID(Version) {
     // Changes rd into pc
