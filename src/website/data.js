@@ -99,8 +99,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 
+var Omni;
+var ReleaseVersion = [];
 let Omni;
 let ReleaseVersion = [];
+app.get('/', async (req, res) => {
+    res.send(fs_1.default.readFileSync("./src/website/index.html").toString());
+});
 let previousVer; // Only used when end ver is null signifying that it was only for the one version
 function UpdateVersionID(Version) {
     // Changes rd into pc
@@ -109,6 +114,9 @@ function UpdateVersionID(Version) {
     // Changes classic into c
     Version = Version.replace("classic ", "c");
     Version = Version.replace(" survival test", "_st");
+    Version = Version.replace("_survival_test", "_st"); // Thank you sightnado
+    if (Version[0] == "0")
+        Version = "c" + Version;
     // Indev [numbers] to in-[numbers]
     Version = Version.replace("indev 0.31 ", "in-");
     Version = Version.replace("indev ", "in-");
@@ -131,6 +139,8 @@ function UpdateVersionID(Version) {
     Version = Version.replace(" experimental snapshot ", "-exp");
     // Changes every combat verion
     Version = Version.replace("combat test ", "combat");
+    // New name format strikes again
+    Version = Version.replace(" snapshot ", "-snap");
     switch (Version) {
         // #region Pre-Classic
         // Unreleased
@@ -335,21 +345,27 @@ function UpdateVersionID(Version) {
         // #endregion
         // #region Survival Test
         // Lost
+        case "c0.24":
         case "c0.24a":
+        case "c0.24_st":
         case "c0.24a_st":
         // Lost
         case "c0.24_01":
         case "c0.24a_01":
         case "c0.24a_st_01":
+        case "c0.24_st_01":
         // Lost
         case "c0.24_02":
         case "c0.24a_02":
         case "c0.24a_st_02":
+        case "c0.24_st_02":
         case "c0.24_02-1":
         case "c0.24a_02-1":
+        case "c0.24_st_02-1":
         case "c0.24a_st_02-1":
         case "c0.24_02-2":
         case "c0.24a_02-2":
+        case "c0.24_st_02-2":
         case "c0.24a_st_02-2":
         case "c0.25":
         case "c0.25a":
@@ -1392,8 +1408,8 @@ function UpdateVersionID(Version) {
 }
 async function CreateVerFile() {
     // Grabs version info from omniarchive (thank you so much Ouroya!)
-    const Omni_URL = "https://corsproxy.io/?url=https://meta.omniarchive.uk/v1/manifest.json";
-    let omniRes = await fetch(Omni_URL, { method: "Get" });
+    const Omni_URL = "https://meta.omniarchive.uk/v1/manifest.json";
+    let omniRes = await fetch(Omni_URL, { method: "GET" });
     let OmniComplete = await omniRes.json();
     // Sets omni to be version data only instead of including latest update
     Omni = OmniComplete.versions;
@@ -1407,7 +1423,7 @@ async function CreateVerFile() {
         else if (Omni[i].id == "c0.30-c-1900-renew")
             Omni[i].releaseTime = new Date("2009-12-01T00:00:00+00:00");
     }
-    const mcdf_URL = "https://corsproxy.io/?url=https://mcdf.wiki.gg/wiki/Special:CargoExport?tables=Version_Range%2C&&fields=Version_Range._pageName%2C+Version_Range.Start%2C+Version_Range.End%2C&&order+by=&limit=2000&format=json";
+    const mcdf_URL = "https://mcdf.wiki.gg/wiki/Special:CargoExport?tables=Version_Range%2C&&fields=Version_Range._pageName%2C+Version_Range.Start%2C+Version_Range.End%2C&&order+by=&limit=2000&format=json";
     // Thank god for tutorials
     const mcdfRes = await fetch(mcdf_URL, { method: "Get" });
     let mcdf = await mcdfRes.json();
@@ -1431,12 +1447,6 @@ async function CreateVerFile() {
             mcdf[i].Start = mcdf[i].End;
         // Removes any deleted - reintroduced ranges
         if (mcdf[i].End.includes("reintoducedversion") || mcdf[i].End.includes("server") || !mcdf[i]._pageName.includes("Java Edition:")) {
-            mcdf.splice(mcdf.indexOf(mcdf[i]), 1);
-            i--;
-            continue;
-        }
-        // Removes Lost Version Discontinued Feature as otherwise it'd link to a real version and will confuse people
-        if (mcdf[i]._pageName == "Java Edition:Lost Version Discontinued Feature") {
             mcdf.splice(mcdf.indexOf(mcdf[i]), 1);
             i--;
             continue;

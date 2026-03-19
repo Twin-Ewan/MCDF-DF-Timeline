@@ -68,6 +68,9 @@ export function UpdateVersionID(Version: string)
   Version = Version.replace("classic ", "c");
   Version = Version.replace(" survival test", "_st");
 
+  Version = Version.replace("_survival_test", "_st"); // Thank you sightnado
+  if(Version[0] == "0") Version = "c" + Version;
+
   // Indev [numbers] to in-[numbers]
   Version = Version.replace("indev 0.31 ", "in-");
   Version = Version.replace("indev ", "in-");
@@ -97,6 +100,9 @@ export function UpdateVersionID(Version: string)
 
   // Changes every combat verion
   Version = Version.replace("combat test ", "combat");
+  
+  // New name format strikes again
+  Version = Version.replace(" snapshot ", "-snap");
 
   switch(Version)
   {
@@ -373,24 +379,31 @@ export function UpdateVersionID(Version: string)
 
     // #region Survival Test
     // Lost
+    case "c0.24":
     case "c0.24a":
+    case "c0.24_st":
     case "c0.24a_st":
 
     // Lost
     case "c0.24_01":
     case "c0.24a_01":
     case "c0.24a_st_01":
+    case "c0.24_st_01":
 
     // Lost
     case "c0.24_02":
     case "c0.24a_02":
     case "c0.24a_st_02":
+    case "c0.24_st_02":
+
     case "c0.24_02-1":
     case "c0.24a_02-1":
+    case "c0.24_st_02-1":
     case "c0.24a_st_02-1":
 
     case "c0.24_02-2":
     case "c0.24a_02-2":
+    case "c0.24_st_02-2":
     case "c0.24a_st_02-2":
 
     case "c0.25":
