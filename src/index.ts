@@ -1754,14 +1754,28 @@ export async function CreateVerFile() {
     else if(Omni[i].id == "c0.30-c-1900-renew") Omni[i].releaseTime = new Date("2009-12-01T00:00:00+00:00");
   }
 
-  const mcdf_URL = "https://mcdf.wiki.gg/api.php?action=cargoquery&format=json&limit=5000&tables=Version_Range&fields=_pageName%2C%20Start%2C%20End&formatversion=2";
+  const mcdf_URL = "https://mcdf.wiki.gg/api.php?action=cargoquery&format=json&limit=500&origin=*&tables=Version_Range&fields=_pageName%2C%20Start%2C%20End&formatversion=2";
 
-  // Thank god for tutorials
-  const mcdfRes = await fetch(mcdf_URL, { method: "Get" })
-  let mcdf: MCDF_Articles = await mcdfRes.json();
+  let mcdfOffset = 0;
+  let mcdfLength = 500;
+  let mcdf: MCDF_Articles = [];
+
+  // Thank god for tutorials  
+  while(mcdfLength == 500)
+  {
+    const mcdfRes = await fetch(mcdf_URL + "&offset=" + mcdfOffset, { method: "Get" })
+    let mcdfCargo = (await mcdfRes.json()).cargoquery;
+  
+    mcdfCargo.forEach((article: { title: MCDF_Article; }) => {
+      mcdf.push(article.title);
+    });
+
+    mcdfOffset += 500;
+    mcdfLength = mcdfCargo.length;
+  }
 
   let BannedSymbols: string[] = ["≤ ", "≤", "≈", "≈ ", "~", "~ ", "≥", "≥ "];
-  let CutoffSymbols: string[] = ["&", "/"];
+  let CutoffSymbols: string[] = ["&", "/", "<"];
 
   // Sanitise data
   for(let i = 0; i < mcdf.length; i++)
@@ -1822,49 +1836,46 @@ export async function CreateVerFile() {
     mcdf[i].Start = (mcdf[i].Start).toLowerCase();
     mcdf[i].End = (mcdf[i].End).toLowerCase();
 
+    // if End is empty (i.e only one version) then set end to start
+    if(mcdf[i].End == "") mcdf[i].End = mcdf[i].Start;
+
     mcdf[i].Start = UpdateVersionID(mcdf[i].Start);
     mcdf[i].End = UpdateVersionID(mcdf[i].End);
   }
 
-  // Snips off the start and end item as theres some stragglers
-  mcdf = mcdf.splice(1, mcdf.length - 2);
+  // Snips off the last item as theres some stragglers
+  mcdf = mcdf.splice(0, mcdf.length - 2);
 
   // Create Article Data
   let Articles: ArticleData[] = [];
   let previousArticle: ArticleData = CreateArticle(mcdf[0]);
   Articles.push(previousArticle);
+
   for(let i = 1; i < mcdf.length; i++)
   {
+    let UpdateIndex
+    UpdateIndex = (UpdateInfo: OmniVer) => UpdateInfo.id == mcdf[i].Start;
+    const StartUpdateInfo = Omni[Omni.findIndex(UpdateIndex)];
+    
+    UpdateIndex = (UpdateInfo: OmniVer) => UpdateInfo.id == mcdf[i].End;
+    const EndUpdateInfo = Omni[Omni.findIndex(UpdateIndex)];
+
+    let StartRelease = "";
+    let EndRelease = "";
+    if(StartUpdateInfo.phase == "post-1.0") 
+    {
+      StartRelease = FindReleaseUpdate(StartUpdateInfo.id).id;
+      StartRelease = StartRelease.split("-")[0] // cuts off before the timecode (thanks 1.16)
+    }
+    if(EndUpdateInfo.phase == "post-1.0") 
+    {
+      EndRelease = FindReleaseUpdate(EndUpdateInfo.id).id;
+      EndRelease = EndRelease.split("-")[0] // cuts off before the timecode (thanks 1.16)
+    }
+
     // Checks if is a diffrent range the same article
-    console.log(mcdf[i]);
     if("Java Edition:" + previousArticle.Title == mcdf[i]._pageName)
     {
-      let UpdateIndex
-      UpdateIndex = (UpdateInfo: OmniVer) => UpdateInfo.id == mcdf[i].Start;
-      const StartUpdateInfo = Omni[Omni.findIndex(UpdateIndex)];
-
-      let EndUpdateInfo;
-
-      // If null then it only existed for 1 version and if its ? then say screw it
-      if(mcdf[i].End != mcdf[i].Start)
-      {
-        UpdateIndex = (UpdateInfo: OmniVer) => UpdateInfo.id == mcdf[i].End;
-        EndUpdateInfo = Omni[Omni.findIndex(UpdateIndex)];
-      }
-      else EndUpdateInfo = StartUpdateInfo;
-
-      let StartRelease = "";
-      let EndRelease = "";
-      if(StartUpdateInfo.phase == "post-1.0") 
-      {
-        StartRelease = FindReleaseUpdate(StartUpdateInfo.id).id;
-        StartRelease = StartRelease.split("-")[0] // cuts off before the timecode (thanks 1.16)
-      }
-      if(EndUpdateInfo.phase == "post-1.0") 
-      {
-        EndRelease = FindReleaseUpdate(EndUpdateInfo.id).id;
-        EndRelease = EndRelease.split("-")[0] // cuts off before the timecode (thanks 1.16)
-      }
 
       previousArticle.Range.push({
         StartId: mcdf[i].Start,
@@ -1881,6 +1892,7 @@ export async function CreateVerFile() {
     }
     else 
     {
+      console.log(Articles[Articles.length-1]);
       Articles.push(CreateArticle(mcdf[i]));
       previousArticle = Articles[Articles.length - 1]
     }
