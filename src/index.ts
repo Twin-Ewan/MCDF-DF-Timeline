@@ -1754,7 +1754,7 @@ export async function CreateVerFile() {
     else if(Omni[i].id == "c0.30-c-1900-renew") Omni[i].releaseTime = new Date("2009-12-01T00:00:00+00:00");
   }
 
-  const mcdf_URL = "https://mcdf.wiki.gg/wiki/Special:CargoExport?tables=Version_Range%2C&&fields=Version_Range._pageName%2C+Version_Range.Start%2C+Version_Range.End%2C&&order+by=&limit=2000&format=json";
+  const mcdf_URL = "https://mcdf.wiki.gg/api.php?action=cargoquery&format=json&limit=5000&tables=Version_Range&fields=_pageName%2C%20Start%2C%20End&formatversion=2";
 
   // Thank god for tutorials
   const mcdfRes = await fetch(mcdf_URL, { method: "Get" })
